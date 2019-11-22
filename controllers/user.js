@@ -15,7 +15,7 @@ const {
   var config = require('../config'); // get config file
   
   var User = require('../models/user');
-  var Store = require('../models/store');
+  var Business = require('../models/business');
   
   exports.list = function(req, res, next) {
     User.find({}, function (err, data) {
@@ -74,7 +74,7 @@ const {
         expiresIn: expiresIn // expires in 24 hours
       });
   
-      Store.create({
+      Business.create({
         user_id: user._id,
         name: req.body.name,
         description: "",
@@ -85,10 +85,10 @@ const {
         state: "",
         country: "",
         created_at: Date.now()
-      }, function (err, store) {
-        if (err) return res.status(500).send("There was a problem registering the store`.");
+      }, function (err, data) {
+        if (err) return res.status(500).send("There was a problem registering the business account.");
   
-        res.status(200).send({ status: 200, auth: true, token: token, expiresIn: expiresIn, user: user, store: store });
+        res.status(200).send({ status: 200, auth: true, token: token, expiresIn: expiresIn, user: user, data: data });
       })
   
       //res.status(200).send({ status: 200, auth: true, token: token, expiresIn: expiresIn });
@@ -113,10 +113,10 @@ const {
         expiresIn: expiresIn // expires in 24 hours
       });
   
-      Store.find({ user_id: user._id }, function(err, stores) {
-        if (err) return res.status(500).send({ status: 500, message: "There was a problem finding stores." });
-        if (!stores) return res.status(404).send({ status: 404, message: "No stores found." });
-        res.status(200).send({ status: 200, auth: true, token: token, expiresIn: expiresIn, user: user, store: stores });
+      Business.find({ user_id: user._id }, function(err, business) {
+        if (err) return res.status(500).send({ status: 500, message: "There was a problem finding business." });
+        if (!business) return res.status(404).send({ status: 404, message: "No business found." });
+        res.status(200).send({ status: 200, auth: true, token: token, expiresIn: expiresIn, user: user, data: business });
       })
   
       // return the information including token as JSON
@@ -169,13 +169,13 @@ const {
       user: function(callback) {
         User.findById(req.userId).exec(callback);
       },
-      stores: function(callback) {
-        Store.find({ user_id: req.userId }).exec(callback);
+      business: function(callback) {
+        Business.find({ user_id: req.userId }).exec(callback);
       },
     }, function(err, results) {
       if (err) return res.status(500).send({ status: 500, message: "There was a problem finding the user." });
       if (!results.user) return res.status(404).send({ status: 404, message: "No user found." });
-      res.status(200).send({ status: 200, data: results.user, stores: results.stores });
+      res.status(200).send({ status: 200, data: results.user, business: results.business });
   
     });
   };

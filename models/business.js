@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 
 var Schema = mongoose.Schema;
 
-var StoreSchema = new Schema({
+var BusinessSchema = new Schema({
     user_id: {type: Schema.ObjectId, ref: 'User', required: true},
     name: {type: String, required: true, max: 50},
     description: {type: String, required: false, max: 50},
@@ -17,9 +17,9 @@ var StoreSchema = new Schema({
 });
 
 // Virtual for store's URL
-StoreSchema.virtual('url')
+BusinessSchema.virtual('url')
 .get(function () {
-  return '/store/' + this._id;
+  return '/business/' + this._id;
 });
 
-module.exports = mongoose.model('Store', StoreSchema);
+module.exports = mongoose.model('Business', BusinessSchema);
